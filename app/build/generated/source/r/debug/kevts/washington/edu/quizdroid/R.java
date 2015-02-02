@@ -1302,6 +1302,7 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020033;
     }
     public static final class id {
+        public static final int Topics=0x7f08004e;
         public static final int action_bar=0x7f080031;
         public static final int action_bar_activity_content=0x7f080000;
         public static final int action_bar_container=0x7f080030;
@@ -1315,12 +1316,20 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f08002e;
         public static final int action_mode_bar_stub=0x7f08002d;
         public static final int action_mode_close_button=0x7f080020;
-        public static final int action_settings=0x7f08003f;
+        public static final int action_settings=0x7f08004f;
         public static final int activity_chooser_view_content=0x7f080021;
         public static final int always=0x7f080016;
+        public static final int beginButton=0x7f08004d;
         public static final int beginning=0x7f080013;
+        public static final int briefDescription=0x7f08004a;
         public static final int checkbox=0x7f080029;
+        public static final int choice1=0x7f080045;
+        public static final int choice2=0x7f080046;
+        public static final int choice3=0x7f080047;
+        public static final int choice4=0x7f080048;
+        public static final int choices=0x7f080043;
         public static final int collapseActionView=0x7f080017;
+        public static final int correctAnswers=0x7f080040;
         public static final int decor_content_parent=0x7f08002f;
         public static final int default_activity_button=0x7f080024;
         public static final int dialog=0x7f08001b;
@@ -1339,10 +1348,14 @@ containing a value of this type.
         public static final int list_item=0x7f080025;
         public static final int middle=0x7f080015;
         public static final int never=0x7f080019;
+        public static final int next=0x7f080042;
         public static final int none=0x7f08000e;
         public static final int normal=0x7f08000a;
+        public static final int numOfQuestions=0x7f08004c;
+        public static final int previousAnswer=0x7f08003f;
         public static final int progress_circular=0x7f080005;
         public static final int progress_horizontal=0x7f080006;
+        public static final int question=0x7f080044;
         public static final int radio=0x7f08002b;
         public static final int search_badge=0x7f080035;
         public static final int search_bar=0x7f080034;
@@ -1359,9 +1372,12 @@ containing a value of this type.
         public static final int showHome=0x7f080010;
         public static final int showTitle=0x7f080011;
         public static final int split_action_bar=0x7f080007;
+        public static final int submit=0x7f080049;
         public static final int submit_area=0x7f08003c;
         public static final int tabMode=0x7f08000b;
         public static final int title=0x7f080027;
+        public static final int topicTitle=0x7f08004b;
+        public static final int totalAnswers=0x7f080041;
         public static final int up=0x7f080008;
         public static final int useLogo=0x7f080012;
         public static final int withText=0x7f08001a;
@@ -1394,11 +1410,17 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030014;
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
-        public static final int activity_topic_selection=0x7f030017;
-        public static final int support_simple_spinner_dropdown_item=0x7f030018;
+        public static final int activity_answer_summary=0x7f030017;
+        public static final int activity_question_page=0x7f030018;
+        public static final int activity_topic_overview=0x7f030019;
+        public static final int activity_topic_selection=0x7f03001a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
     }
     public static final class menu {
-        public static final int menu_topic_selection=0x7f0c0000;
+        public static final int menu_answer_summary=0x7f0c0000;
+        public static final int menu_question_page=0x7f0c0001;
+        public static final int menu_topic_overview=0x7f0c0002;
+        public static final int menu_topic_selection=0x7f0c0003;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f0a0000;
@@ -1420,6 +1442,9 @@ containing a value of this type.
         public static final int action_settings=0x7f0a0010;
         public static final int app_name=0x7f0a0011;
         public static final int hello_world=0x7f0a0012;
+        public static final int title_activity_answer_summary=0x7f0a0013;
+        public static final int title_activity_question_page=0x7f0a0014;
+        public static final int title_activity_topic_overview=0x7f0a0015;
     }
     public static final class style {
         /**  Customize your theme here. 

@@ -9,14 +9,21 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/briefDescription"
+        android:gravity="center"
+        android:text=""
         android:id="@+id/topicTitle"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/numOfQuestions"
+        android:text=""
         android:id="@+id/briefDescription"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/beginButton"
+        android:text=""
         android:id="@+id/numOfQuestions"/>
     <Button
         android:layout_width="wrap_content"
