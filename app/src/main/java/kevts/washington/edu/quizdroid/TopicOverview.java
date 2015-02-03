@@ -51,6 +51,7 @@ public class TopicOverview extends Activity {
                 intent.putExtra("topic", topic);
                 intent.putExtra("questionNumber", 0);
                 startActivityForResult(intent, 1);
+                finish();
             }
         });
     }

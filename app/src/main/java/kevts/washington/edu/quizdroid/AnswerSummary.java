@@ -54,10 +54,12 @@ public class AnswerSummary extends Activity {
                     intent.putExtra("questionNumber", nextQuestion);
                     intent.putExtra("answersCorrect", currentCorrect);
                     startActivityForResult(intent, 1);
+                    finish();
                 } else {
                     currentCorrect = 0;
                     Intent intent = new Intent(AnswerSummary.this, TopicSelection.class);
                     startActivityForResult(intent, 1);
+                    finish();
                 }
 
             }

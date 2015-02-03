@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 public class QuestionPage extends Activity implements OnClickListener {
 
-    private int currentQuestion;
     private int nextQuestionIndex;
     private int selectedAnswer;
 
@@ -111,7 +110,6 @@ public class QuestionPage extends Activity implements OnClickListener {
     }
 
     public void populate(QuestionAnswer[] array, int i) {
-        currentQuestion = i;
         TextView question = (TextView)findViewById(R.id.question);
         question.setText(array[i].getQuestion());
         for (int x = 0; x < array.length; x++) {
