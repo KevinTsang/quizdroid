@@ -16,26 +16,36 @@ public class TopicOverview extends Activity {
         setContentView(R.layout.activity_topic_overview);
         Intent parentCall = getIntent();
         String topic = parentCall.getStringExtra("topic");
-        switch (topic) {
-            case "math":
+        if (topic.equals("math")) {
+            TextView topicTitle = (TextView) findViewById(R.id.topicTitle);
+            TextView briefDescription = (TextView) findViewById(R.id.briefDescription);
+            TextView numOfQuestions = (TextView) findViewById(R.id.numOfQuestions);
+            topicTitle.setText("Math");
+            briefDescription.setText("This is a quiz on fundamental mathematical operations." +
+                    " There will be questions testing addition, subtraction, multiplication, and division.");
+            numOfQuestions.setText("4 questions total");
+        } else if (topic.equals("physics")) {
                 TextView topicTitle = (TextView)findViewById(R.id.topicTitle);
                 TextView briefDescription = (TextView)findViewById(R.id.briefDescription);
                 TextView numOfQuestions = (TextView)findViewById(R.id.numOfQuestions);
-                topicTitle.setText("Math");
-                briefDescription.setText("This is a quiz on fundamental mathematical operations." +
-                        " There will be questions testing addition, subtraction, multiplication, and division.");
+                topicTitle.setText("Physics");
+                briefDescription.setText("This is a quiz on fundamental physics concepts." +
+                        " There will be questions testing basic mechanics, (e.g. momentum, force, energy).");
                 numOfQuestions.setText("4 questions total");
-                break;
-            case "physics":
-                break;
-            case "msh":
-                break;
+        } else if (topic.equals("msh")) {
+            TextView topicTitle = (TextView)findViewById(R.id.topicTitle);
+            TextView briefDescription = (TextView)findViewById(R.id.briefDescription);
+            TextView numOfQuestions = (TextView)findViewById(R.id.numOfQuestions);
+            topicTitle.setText("Marvel Super Heroes");
+            briefDescription.setText("This is a quiz on Marvel Super Heroes." +
+                    " There will be questions testing from comic books and the movies.");
+            numOfQuestions.setText("4 questions total");
         }
         Button beginButton = (Button)findViewById(R.id.beginButton);
         beginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TopicOverview.this, QuestionPage.class);
+                Intent intent = TopicOverview.this.getIntent();
                 startActivityForResult(intent, 1);
             }
         });
