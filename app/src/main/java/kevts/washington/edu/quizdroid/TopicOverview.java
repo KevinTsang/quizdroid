@@ -40,12 +40,13 @@ public class TopicOverview extends Activity {
             briefDescription.setText("This is a quiz on Marvel Super Heroes." +
                     " There will be questions testing from comic books and the movies.");
             numOfQuestions.setText("4 questions total");
-        }
+        } // add more topics here
         Button beginButton = (Button)findViewById(R.id.beginButton);
         beginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = TopicOverview.this.getIntent();
+                intent.putExtra("questionNumber", 1);
                 startActivityForResult(intent, 1);
             }
         });

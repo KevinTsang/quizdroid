@@ -9,7 +9,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:textSize="12pt"
         android:id="@+id/topicTitle"/>
     <TextView
         android:layout_width="wrap_content"
@@ -20,12 +21,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/briefDescription"
+        android:textSize="8pt"
         android:id="@+id/numOfQuestions"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Begin"
         android:layout_below="@+id/numOfQuestions"
+        android:layout_centerHorizontal="true"
         android:id="@+id/beginButton"/>
 
 </RelativeLayout>
