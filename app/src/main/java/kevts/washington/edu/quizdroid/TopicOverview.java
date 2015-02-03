@@ -45,8 +45,11 @@ public class TopicOverview extends Activity {
         beginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = TopicOverview.this.getIntent();
-                intent.putExtra("questionNumber", 1);
+                Intent intent = new Intent(TopicOverview.this, QuestionPage.class);
+                Intent oldIntent = TopicOverview.this.getIntent();
+                String topic = oldIntent.getStringExtra("topic");
+                intent.putExtra("topic", topic);
+                intent.putExtra("questionNumber", 0);
                 startActivityForResult(intent, 1);
             }
         });

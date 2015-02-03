@@ -9,38 +9,57 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your answer was: "/>
+        android:text="Your answer was: "
+        android:id="@+id/previousAnswerText"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/previousAnswerText"
         android:id="@+id/previousAnswer"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The correct answer was: "/>
+        android:text="The correct answer was: "
+        android:layout_below="@+id/previousAnswerText"
+        android:id="@+id/correctAnswerText"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/correctAnswerText"
+        android:id="@+id/correctAnswer"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/correctAnswerText"
         android:text="You have "/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/correctAnswerText"
         android:id="@+id/correctAnswers"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/correctAnswerText"
+        android:layout_toRightOf="@+id/correctAnswers"
+        android:id="@+id/answerTransition"
         android:text=" out of "/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/answerTransition"
         android:id="@+id/totalAnswers"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/totalAnswers"
+        android:layout_below="@id/correctAnswerText"
         android:text=" correct."/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:id="@+id/next"/>
 
 </RelativeLayout>
