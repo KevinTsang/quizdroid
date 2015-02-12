@@ -10,14 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
-public class FragmentManager extends FragmentActivity {
+public class FragManager extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +28,7 @@ public class FragmentManager extends FragmentActivity {
                     .commit();
         }
     }
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -65,14 +65,17 @@ public class FragmentManager extends FragmentActivity {
                 @Override
                 public void onClick(View v) {
                     /*Intent intent = new Intent(TopicOverview.this, QuestionPage.class);
-                    Intent oldIntent = TopicOverview.this.getIntent();
-                    String topic = oldIntent.getStringExtra("topic");
-                    intent.putExtra("topic", topic);
                     intent.putExtra("questionNumber", 0);
                     startActivityForResult(intent, 1);
                     finish();*/
-                    FragmentTransaction ft = getFragmentManager().beginTransaction().replace(R.id.container, new QuestionFragment());
-                    ft.addToBackStack("Question");
+                    Bundle overviewToQuestion = new Bundle();
+                    overviewToQuestion.putInt("questionNumber", 0);
+                    QuestionFragment qf = new QuestionFragment();
+                    qf.setArguments(overviewToQuestion);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.animator.slide_out_left, R.animator.slide_in_right);
+                    ft.replace(R.id.container, qf);
+                    ft.addToBackStack("Overview");
                     ft.commit();
                 }
             });
@@ -87,6 +90,8 @@ public class FragmentManager extends FragmentActivity {
 
         private static int nextQuestionIndex;
         private static int selectedAnswer;
+        private static int currentQuestion;
+        private static int currentCorrect;
         private View rootView;
 
         public QuestionFragment() {
@@ -98,7 +103,9 @@ public class FragmentManager extends FragmentActivity {
             rootView = inflater.inflate(R.layout.activity_question_page, container, false);
             Intent parentCall = getActivity().getIntent();
             String topic = parentCall.getStringExtra("topic");
-            final int currentQuestion = parentCall.getIntExtra("questionNumber", 0);
+            Bundle fragmentData = getArguments();
+            currentCorrect = fragmentData.getInt("currentCorrect");
+            currentQuestion = fragmentData.getInt("currentQuestion");
             switch (topic) {
                 case "math":
                     QuestionAnswer[] mathQuestions = QuizInit.initializeMath();
@@ -169,17 +176,18 @@ public class FragmentManager extends FragmentActivity {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent intent = new Intent(QuestionPage.this, AnswerSummary.class);
-                    int answersCorrect = rootView.getIntent().getIntExtra("answersCorrect", -1);
-                    if (answersCorrect != -1) {
-                        intent.putExtra("answersCorrect", answersCorrect);
-                    }
-                    intent.putExtra("selectedAnswer", selectedAnswer);
-                    intent.putExtra("previousQuestion", currentQuestion);
-                    intent.putExtra("currentQuestion", nextQuestionIndex);
-                    String topic = rootView.getIntent().getStringExtra("topic");
-                    intent.putExtra("topic", topic);
-                    startActivityForResult(intent, 1);*/
+                    Bundle questionToSummary = new Bundle();
+                    questionToSummary.putInt("selectedAnswer", selectedAnswer);
+                    questionToSummary.putInt("previousQuestion", currentQuestion);
+                    questionToSummary.putInt("currentQuestion", nextQuestionIndex);
+                    questionToSummary.putInt("currentCorrect", currentCorrect);
+                    SummaryFragment sf = new SummaryFragment();
+                    sf.setArguments(questionToSummary);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.animator.slide_out_left, R.animator.slide_in_right);
+                    ft.replace(R.id.container, sf);
+                    ft.addToBackStack("Question");
+                    ft.commit();
                 }
             });
             return rootView;
@@ -212,7 +220,8 @@ public class FragmentManager extends FragmentActivity {
      */
     public static class SummaryFragment extends Fragment {
 
-        private int currentCorrect = 0;
+        private int currentCorrect;
+        private int previousQuestion;
         private View rootView;
 
         public SummaryFragment() {
@@ -222,12 +231,16 @@ public class FragmentManager extends FragmentActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.activity_answer_summary, container, false);
+
+            Bundle fragmentData = getArguments();
+            currentCorrect = fragmentData.getInt("currentCorrect", 0);
+            previousQuestion = fragmentData.getInt("previousQuestion", 0);
+            int userAnswer = fragmentData.getInt("selectedAnswer", 0);
+            final int nextQuestion = fragmentData.getInt("currentQuestion", 0);
+
             Intent parentCall = getActivity().getIntent();
-            currentCorrect = parentCall.getIntExtra("answersCorrect", 0);
-            int userAnswer = parentCall.getIntExtra("selectedAnswer", 0);
-            int previousQuestion = parentCall.getIntExtra("previousQuestion", 0);
             String topic = parentCall.getStringExtra("topic");
-            int nextQuestion = parentCall.getIntExtra("currentQuestion", 0);
+
             switch (topic) {
                 case "math":
                     QuestionAnswer[] mathQuestions = QuizInit.initializeMath();
@@ -252,21 +265,23 @@ public class FragmentManager extends FragmentActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent parentCall = rootView.getIntent();
-                    int nextQuestion = parentCall.getIntExtra("currentQuestion", 0);
-                    if (next.getText().equals("Next")) {
-                        Intent intent = new Intent(AnswerSummary.this, QuestionPage.class);
-                        intent.putExtra("topic", parentCall.getStringExtra("topic"));
-                        intent.putExtra("questionNumber", nextQuestion);
-                        intent.putExtra("answersCorrect", currentCorrect);
-                        startActivityForResult(intent, 1);
-                        //finish();
+                    if (nextQuestion != -1) {
+                        Bundle summaryToQuestion = new Bundle();
+                        summaryToQuestion.putInt("currentCorrect", currentCorrect);
+                        summaryToQuestion.putInt("currentQuestion", previousQuestion + 1);
+                        QuestionFragment qf = new QuestionFragment();
+                        qf.setArguments(summaryToQuestion);
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.setCustomAnimations(R.animator.slide_out_left, R.animator.slide_in_right);
+                        ft.replace(R.id.container, qf);
+                        ft.addToBackStack("Question");
+                        ft.commit();
                     } else {
                         currentCorrect = 0;
-                        Intent intent = new Intent(AnswerSummary.this, TopicSelection.class);
+                        Intent intent = new Intent(getActivity(), TopicSelection.class);
                         startActivityForResult(intent, 1);
-                        //finish();
-                    }*/
+                        getActivity().finish();
+                    }
 
                 }
             });

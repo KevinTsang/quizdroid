@@ -29,7 +29,7 @@
             android:label="@string/title_activity_answer_summary" >
         </activity>
         <activity
-            android:name=".FragmentManager"
+            android:name=".FragManager"
             android:label="@string/title_activity_fragment_manager" >
         </activity>
     </application>
