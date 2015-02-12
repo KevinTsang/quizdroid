@@ -1,12 +1,12 @@
 package kevts.washington.edu.quizdroid;
 
+
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -49,18 +49,15 @@ public class FragmentManager extends FragmentActivity {
             TextView numOfQuestions = (TextView) rootView.findViewById(R.id.numOfQuestions);
             if (topic.equals("math")) {
                 topicTitle.setText("Math");
-                briefDescription.setText("This is a quiz on fundamental mathematical operations." +
-                        " There will be questions testing addition, subtraction, multiplication, and division.");
+                briefDescription.setText(getString(R.string.mathBriefDescription));
                 numOfQuestions.setText(getString(R.string.totalQuestions));
             } else if (topic.equals("physics")) {
                 topicTitle.setText("Physics");
-                briefDescription.setText("This is a quiz on fundamental physics concepts." +
-                        " There will be questions testing basic mechanics, (e.g. momentum, force, energy).");
+                briefDescription.setText(getString(R.string.physicsBriefDescription));
                 numOfQuestions.setText(getString(R.string.totalQuestions));
             } else if (topic.equals("msh")) {
                 topicTitle.setText("Marvel Super Heroes");
-                briefDescription.setText("This is a quiz on Marvel Super Heroes." +
-                        " There will be questions testing from comic books and the movies.");
+                briefDescription.setText(getString(R.string.mshBriefDescription));
                 numOfQuestions.setText(getString(R.string.totalQuestions));
             } // add more topics here
             Button beginButton = (Button) rootView.findViewById(R.id.beginButton);
@@ -74,6 +71,9 @@ public class FragmentManager extends FragmentActivity {
                     intent.putExtra("questionNumber", 0);
                     startActivityForResult(intent, 1);
                     finish();*/
+                    FragmentTransaction ft = getFragmentManager().beginTransaction().replace(R.id.container, new QuestionFragment());
+                    ft.addToBackStack("Question");
+                    ft.commit();
                 }
             });
             return rootView;
