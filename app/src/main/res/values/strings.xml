@@ -7,5 +7,7 @@
     <string name="title_activity_topic_overview">TopicOverview</string>
     <string name="title_activity_question_page">QuestionPage</string>
     <string name="title_activity_answer_summary">AnswerSummary</string>
+    <string name="title_activity_fragment_manager">FragmentManager</string>
+    <string name="totalQuestions">4 questions total</string>
 
 </resources>

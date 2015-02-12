@@ -24,7 +24,7 @@ public class TopicSelection extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TopicSelection.this, TopicOverview.class);
+                Intent intent = new Intent(TopicSelection.this, FragmentManager.class);
                 switch (((TextView)view).getText().toString()) {
                     case "Math": intent.putExtra("topic", "math");
                         startActivityForResult(intent, 1);

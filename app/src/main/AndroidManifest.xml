@@ -28,6 +28,10 @@
             android:name=".AnswerSummary"
             android:label="@string/title_activity_answer_summary" >
         </activity>
+        <activity
+            android:name=".FragmentManager"
+            android:label="@string/title_activity_fragment_manager" >
+        </activity>
     </application>
 
 </manifest>
