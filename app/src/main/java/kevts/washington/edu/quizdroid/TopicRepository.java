@@ -1,12 +1,14 @@
 package kevts.washington.edu.quizdroid;
 
+import java.util.ArrayList;
+
 /**
  * Created by kevin on 2/15/15.
  */
 public interface TopicRepository {
 
     // Topic Region
-    public Topic[] getTopics();
+    public ArrayList<Topic> getTopics();
 
     public String getTopic();
 

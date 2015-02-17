@@ -4,10 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class TopicSelection extends Activity {
@@ -18,19 +22,15 @@ public class TopicSelection extends Activity {
         setContentView(R.layout.activity_topic_selection);
         ListView listView = (ListView)findViewById(R.id.Topics);
         final QuizApp instance = (QuizApp)getApplication();
-        String[] topics = new String[instance.getTopics().length];
-        Topic[] topicArray = instance.getTopics();
-        for (int i = 0; i < instance.getTopics().length; i++) {
-            topics[i] = topicArray[i].getTopic() + "- " + topicArray[i].getShortDescription();
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, topics);
+        ArrayList<Topic> topicArray = instance.getTopics();
+        CustomArrayAdapter adapter = new CustomArrayAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, topicArray);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(TopicSelection.this, FragManager.class);
-                switch (((TextView)view).getText().toString()) {
+                switch (((TextView)((LinearLayout)view).getChildAt(1)).getText().toString()) {
                     case "Math- Fundamental mathematical operations":
                         instance.setCurrentTopic(0);
                         break;

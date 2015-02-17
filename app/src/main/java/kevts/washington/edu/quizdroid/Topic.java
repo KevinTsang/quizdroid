@@ -56,4 +56,9 @@ public class Topic implements Serializable {
     public void setCurrentCorrect(int i) {
         currentCorrect = i;
     }
+
+    @Override
+    public String toString() {
+        return topic + "- " + shortDescription;
+    }
 }

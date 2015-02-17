@@ -49,12 +49,8 @@ public class QuizApp extends Application implements TopicRepository {
         currentTopic = index;
     }
 
-    public Topic[] getTopics() {
-        Topic[] array = new Topic[topics.size()];
-        for (int i = 0; i < topics.size(); i++) {
-            array[i] = topics.get(i);
-        }
-        return array;
+    public ArrayList<Topic> getTopics() {
+        return topics;
     }
 
     public String getTopic() {
