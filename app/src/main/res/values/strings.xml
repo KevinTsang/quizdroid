@@ -8,12 +8,5 @@
     <string name="title_activity_question_page">QuestionPage</string>
     <string name="title_activity_answer_summary">AnswerSummary</string>
     <string name="title_activity_fragment_manager">FragmentManager</string>
-    <string name="totalQuestions">4 questions total</string>
-    <string name="mathBriefDescription">This is a quiz on fundamental mathematical operations.
-        There will be questions testing addition, subtraction, multiplication, and division.</string>
-    <string name="physicsBriefDescription">This is a quiz on fundamental physics concepts.
-        There will be questions testing basic mechanics, (e.g. momentum, force, energy).</string>
-    <string name="mshBriefDescription">This is a quiz on Marvel Super Heroes.
-        There will be questions testing from comic books and the movies.</string>
 
 </resources>

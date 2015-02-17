@@ -17,7 +17,12 @@ public class TopicSelection extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_selection);
         ListView listView = (ListView)findViewById(R.id.Topics);
-        String[] topics = new String[] {"Math", "Physics", "Marvel Super Heroes"};
+        final QuizApp instance = (QuizApp)getApplication();
+        String[] topics = new String[instance.getTopics().length];
+        Topic[] topicArray = instance.getTopics();
+        for (int i = 0; i < instance.getTopics().length; i++) {
+            topics[i] = topicArray[i].getTopic() + "- " + topicArray[i].getShortDescription();
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, topics);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -26,16 +31,17 @@ public class TopicSelection extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(TopicSelection.this, FragManager.class);
                 switch (((TextView)view).getText().toString()) {
-                    case "Math": intent.putExtra("topic", "math");
-                        startActivityForResult(intent, 1);
+                    case "Math- Fundamental mathematical operations":
+                        instance.setCurrentTopic(0);
                         break;
-                    case "Physics": intent.putExtra("topic", "physics");
-                        startActivityForResult(intent, 2);
+                    case "Physics- Basic mechanics":
+                        instance.setCurrentTopic(1);
                         break;
-                    case "Marvel Super Heroes": intent.putExtra("topic", "msh");
-                        startActivityForResult(intent, 3);
+                    case "Marvel Super Heroes- Questions on both comic books and movies":
+                        instance.setCurrentTopic(2);
                         break;
                 }
+                startActivityForResult(intent, 1);
             }
         });
     }
