@@ -1,7 +1,13 @@
 package kevts.washington.edu.quizdroid;
 
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -13,6 +19,8 @@ public class QuizApp extends Application implements TopicRepository {
     private static ArrayList<Topic> topics = new ArrayList<Topic>();
     private int currentTopic = -1;
     private int currentQuestion = 0;
+    private static final int ALARM_ID = 3333;
+    private boolean activeAlarm;
 
     @Override
     public void onCreate() {
@@ -39,6 +47,28 @@ public class QuizApp extends Application implements TopicRepository {
         topics.add(mathTopic);
         topics.add(physicsTopic);
         topics.add(mshTopic);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String intervalString = sharedPreferences.getString(getString(R.string.interval_key),
+                getString(R.string.default_interval));
+        int interval = Integer.parseInt(intervalString);
+
+        Intent downloadReceiverIntent = new Intent(this, DownloadReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, ALARM_ID,
+                downloadReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        activeAlarm = (PendingIntent.getBroadcast(this, ALARM_ID,
+                new Intent(this, DownloadReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
+        if (activeAlarm) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+        }
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                interval * 60000, pendingIntent);
+    }
+
+    public boolean getAlarm() {
+        return activeAlarm;
     }
 
     public static QuizApp getInstance() {

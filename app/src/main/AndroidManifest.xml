@@ -2,12 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kevts.washington.edu.quizdroid" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".QuizApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".QuizApp"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".TopicSelection"
@@ -21,6 +22,10 @@
         <activity
             android:name=".FragManager"
             android:label="@string/title_activity_fragment_manager" >
+        </activity>
+        <activity
+            android:name=".PreferencesActivity"
+            android:label="@string/title_activity_preferences" >
         </activity>
     </application>
 
