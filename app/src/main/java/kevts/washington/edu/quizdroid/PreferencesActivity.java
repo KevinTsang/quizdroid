@@ -2,7 +2,10 @@ package kevts.washington.edu.quizdroid;
 
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +17,8 @@ import android.widget.Toast;
 
 
 public class PreferencesActivity extends Activity {
+
+    private static final int ALARM_ID = 3333;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,14 @@ public class PreferencesActivity extends Activity {
         savePreferencesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (QuizApp.getInstance().getAlarm()) {
+                    Intent downloadReceiverIntent = new Intent(getApplicationContext(), DownloadReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), ALARM_ID,
+                            downloadReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.cancel(pendingIntent);
+                    pendingIntent.cancel();
+                }
                 try {
                     String updatedURL = urlTextBox.getText().toString();
                     String updatedInterval = intervalTextBox.getText().toString();
@@ -46,6 +59,13 @@ public class PreferencesActivity extends Activity {
                         editor.putString(getString(R.string.url_key), updatedURL);
                         editor.putString(getString(R.string.interval_key), updatedInterval);
                         editor.commit();
+
+                        Intent downloadReceiverIntent = new Intent(getApplicationContext(), DownloadReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), ALARM_ID,
+                                downloadReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                                Integer.parseInt(updatedInterval) * 60000, pendingIntent);
                     } else {
                         Toast.makeText(PreferencesActivity.this,
                                 "Please input a number above 0 for an interval.", Toast.LENGTH_SHORT).show();

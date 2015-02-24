@@ -53,16 +53,12 @@ public class QuizApp extends Application implements TopicRepository {
                 getString(R.string.default_interval));
         int interval = Integer.parseInt(intervalString);
 
-        Intent downloadReceiverIntent = new Intent(this, DownloadReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, ALARM_ID,
+        Intent downloadReceiverIntent = new Intent(getApplicationContext(), DownloadReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), ALARM_ID,
                 downloadReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        activeAlarm = (PendingIntent.getBroadcast(this, ALARM_ID,
+        activeAlarm = (PendingIntent.getBroadcast(getApplicationContext(), ALARM_ID,
                 new Intent(this, DownloadReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
-        if (activeAlarm) {
-            alarmManager.cancel(pendingIntent);
-            pendingIntent.cancel();
-        }
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
                 interval * 60000, pendingIntent);
     }
