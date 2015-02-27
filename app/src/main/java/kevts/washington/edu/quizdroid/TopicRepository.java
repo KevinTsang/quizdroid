@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public interface TopicRepository {
 
+    public void readData();
+
     // Topic Region
     public ArrayList<Topic> getTopics();
 

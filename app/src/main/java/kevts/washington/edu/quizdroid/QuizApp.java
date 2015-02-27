@@ -3,13 +3,20 @@ package kevts.washington.edu.quizdroid;
 
 import android.app.AlarmManager;
 import android.app.Application;
+import android.app.DownloadManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.JsonReader;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class QuizApp extends Application implements TopicRepository {
@@ -61,6 +68,36 @@ public class QuizApp extends Application implements TopicRepository {
                 new Intent(this, DownloadReceiver.class), PendingIntent.FLAG_NO_CREATE) != null);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
                 interval * 60000, pendingIntent);
+    }
+
+    public void readData() {
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+                    DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                    downloadManager.getUriForDownloadedFile(downloadId);
+                    try {
+                        File jsondata = new File(getFilesDir(), "quizdata.json");
+                        if (jsondata.exists()) {
+
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Download failed.");
+                    }
+//                    DownloadManager.Query query = new DownloadManager.Query();
+//                    query.setFilterById(downloadId);
+//                    Cursor c = downloadManager.query(query);
+//                    if (c.moveToFirst()) {
+//
+//                    }
+                }
+                else if(DownloadManager.STATUS_FAILED == 16) {
+                    Log.e(TAG, "Download failed.");
+                }
+            }
+        };
     }
 
     public boolean getAlarm() {
