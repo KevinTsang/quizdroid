@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public interface TopicRepository {
 
-    public void readData();
+    public void saveDownload();
 
     // Topic Region
     public ArrayList<Topic> getTopics();

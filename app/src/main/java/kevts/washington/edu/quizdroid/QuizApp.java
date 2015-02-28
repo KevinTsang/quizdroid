@@ -9,14 +9,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.JsonReader;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class QuizApp extends Application implements TopicRepository {
@@ -71,27 +79,49 @@ public class QuizApp extends Application implements TopicRepository {
     }
 
     public void readData() {
+    }
+
+    public void savefile(URI sourceuri)
+    {
+        String sourceFilename= sourceuri.getPath();
+        String destinationFilename = android.os.Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"quizdata.json";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while(bis.read(buf) != -1);
+        } catch (IOException e) {
+
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+    public void saveDownload() {
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
                     DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
                     long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                    downloadManager.getUriForDownloadedFile(downloadId);
+                    Uri downloadedFile = downloadManager.getUriForDownloadedFile(downloadId);
                     try {
-                        File jsondata = new File(getFilesDir(), "quizdata.json");
-                        if (jsondata.exists()) {
-
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Download failed.");
+                        savefile(new URI(downloadedFile.toString()));
+                    } catch (URISyntaxException urise) {
+                        Log.e(TAG, "Invalid download location.");
                     }
-//                    DownloadManager.Query query = new DownloadManager.Query();
-//                    query.setFilterById(downloadId);
-//                    Cursor c = downloadManager.query(query);
-//                    if (c.moveToFirst()) {
-//
-//                    }
                 }
                 else if(DownloadManager.STATUS_FAILED == 16) {
                     Log.e(TAG, "Download failed.");
