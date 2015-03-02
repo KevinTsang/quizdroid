@@ -1,17 +1,27 @@
 package kevts.washington.edu.quizdroid;
 
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.DownloadManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.JsonReader;
+import android.util.JsonWriter;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -20,11 +30,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.OutputStreamWriter;
+import java.nio.*;
 import java.util.ArrayList;
 
 public class QuizApp extends Application implements TopicRepository {
@@ -56,13 +67,41 @@ public class QuizApp extends Application implements TopicRepository {
             throw new RuntimeException("There can only be one available instance of quizdroid,"
                     + " please close other instances before proceeding.");
         }
-        Topic mathTopic = initializeMathTopic();
-        Topic physicsTopic = initializePhysicsTopic();
-        Topic mshTopic = initializeMSHTopic();
-        topics.add(mathTopic);
-        topics.add(physicsTopic);
-        topics.add(mshTopic);
+        readData();
+        setAlarmOnStartUp();
+    }
 
+    public static boolean haveNetworkConnection(Context context) {
+        boolean wifiOn = false;
+        boolean mobileOn = false;
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    wifiOn = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    mobileOn = true;
+        }
+        return wifiOn || mobileOn;
+    }
+
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static boolean isAirplaneModeOn(Context context) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return Settings.System.getInt(context.getContentResolver(),
+                    Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+        } else {
+            return Settings.Global.getInt(context.getContentResolver(),
+                    Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+        }
+
+    }
+
+    private void setAlarmOnStartUp() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String intervalString = sharedPreferences.getString(getString(R.string.interval_key),
                 getString(R.string.default_interval));
@@ -79,56 +118,65 @@ public class QuizApp extends Application implements TopicRepository {
     }
 
     public void readData() {
-    }
-
-    public void savefile(URI sourceuri)
-    {
-        String sourceFilename= sourceuri.getPath();
-        String destinationFilename = android.os.Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"quizdata.json";
-
-        BufferedInputStream bis = null;
-        BufferedOutputStream bos = null;
-
         try {
-            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
-            bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
-            byte[] buf = new byte[1024];
-            bis.read(buf);
-            do {
-                bos.write(buf);
-            } while(bis.read(buf) != -1);
+            FileInputStream fis = openFileInput("quizdata.json");
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(fis));
+            ArrayList<Topic> topicsList = JsonParser.readJson(jsonReader);
+            topics.addAll(topicsList);
+            jsonReader.close();
+            fis.close();
         } catch (IOException e) {
-
-        } finally {
-            try {
-                if (bis != null) bis.close();
-                if (bos != null) bos.close();
-            } catch (IOException e) {
-
-            }
+            Log.e(TAG, "Missing quiz file.");
+            Topic mathTopic = initializeMathTopic();
+            Topic physicsTopic = initializePhysicsTopic();
+            Topic mshTopic = initializeMSHTopic();
+            topics.add(mathTopic);
+            topics.add(physicsTopic);
+            topics.add(mshTopic);
         }
     }
 
-    public void saveDownload() {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
-                    DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
-                    long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                    Uri downloadedFile = downloadManager.getUriForDownloadedFile(downloadId);
-                    try {
-                        savefile(new URI(downloadedFile.toString()));
-                    } catch (URISyntaxException urise) {
-                        Log.e(TAG, "Invalid download location.");
+
+    final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+                DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                if (downloadId != 0) {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(downloadId);
+                    Cursor c = downloadManager.query(query);
+                    if (c.moveToFirst()) {
+                        int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                        switch (status) {
+                            case DownloadManager.STATUS_PAUSED:
+                            case DownloadManager.STATUS_PENDING:
+                            case DownloadManager.STATUS_RUNNING:
+                                break;
+                            case DownloadManager.STATUS_SUCCESSFUL:
+                                try {
+                                    ParcelFileDescriptor file = downloadManager.openDownloadedFile(downloadId);
+                                    FileInputStream fis = new FileInputStream(file.getFileDescriptor());
+                                    String json = JsonParser.readJson(fis);
+                                    FileOutputStream fos = openFileOutput("quizdata.json", MODE_PRIVATE);
+                                    fos.write(json.getBytes());
+                                    fos.close();
+                                } catch (IOException e) {
+                                    Log.e(TAG, "Invalid download location.");
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case DownloadManager.STATUS_FAILED:
+                                Log.e(TAG, "Download failed.");
+                                // Show alert dialog here
+                                break;
+                        }
                     }
                 }
-                else if(DownloadManager.STATUS_FAILED == 16) {
-                    Log.e(TAG, "Download failed.");
-                }
             }
-        };
-    }
+        }
+    };
 
     public boolean getAlarm() {
         return activeAlarm;

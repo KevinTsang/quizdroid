@@ -7,4 +7,4 @@
     tools:context=".TopicSelection"
     android:id="@+id/Topics">
 </ListView>
-<!-- From: file:/Users/iguest/quizdroid/app/src/main/res/layout/activity_topic_selection.xml -->
+<!-- From: file:/home/kevin/AndroidStudioProjects/quizdroid/app/src/main/res/layout/activity_topic_selection.xml -->
