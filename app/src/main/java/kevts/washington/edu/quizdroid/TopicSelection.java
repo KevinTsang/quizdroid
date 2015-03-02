@@ -2,12 +2,19 @@ package kevts.washington.edu.quizdroid;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -18,6 +25,9 @@ import android.widget.AdapterView;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,6 +42,9 @@ public class TopicSelection extends ActionBarActivity {
         setContentView(R.layout.activity_topic_selection);
         ListView listView = (ListView)findViewById(R.id.Topics);
         final QuizApp instance = (QuizApp)getApplication();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        registerReceiver(this.broadcastReceiver, filter);
         ArrayList<Topic> topicArray = instance.getTopics();
         CustomArrayAdapter adapter = new CustomArrayAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, topicArray);
         listView.setAdapter(adapter);
@@ -81,6 +94,47 @@ public class TopicSelection extends ActionBarActivity {
         }
     }
 
+    final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+                DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+                long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                if (downloadId != 0) {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(downloadId);
+                    Cursor c = downloadManager.query(query);
+                    if (c.moveToFirst()) {
+                        int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                        switch (status) {
+                            case DownloadManager.STATUS_PAUSED:
+                            case DownloadManager.STATUS_PENDING:
+                            case DownloadManager.STATUS_RUNNING:
+                                break;
+                            case DownloadManager.STATUS_SUCCESSFUL:
+                                try {
+                                    ParcelFileDescriptor file = downloadManager.openDownloadedFile(downloadId);
+                                    FileInputStream fis = new FileInputStream(file.getFileDescriptor());
+                                    String json = JsonParser.readJson(fis);
+                                    FileOutputStream fos = openFileOutput("quizdata.json", MODE_PRIVATE);
+                                    fos.write(json.getBytes());
+                                    fos.close();
+                                } catch (IOException e) {
+                                    Log.e("TopicSelection", "Invalid download location.");
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case DownloadManager.STATUS_FAILED:
+                                Log.e("TopicSelection", "Download failed.");
+                                // Show alert dialog here
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -103,5 +157,11 @@ public class TopicSelection extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(this.broadcastReceiver);
     }
 }

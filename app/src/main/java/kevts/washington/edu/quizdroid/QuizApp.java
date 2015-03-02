@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -135,48 +136,6 @@ public class QuizApp extends Application implements TopicRepository {
             topics.add(mshTopic);
         }
     }
-
-
-    final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
-                DownloadManager downloadManager = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
-                long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                if (downloadId != 0) {
-                    DownloadManager.Query query = new DownloadManager.Query();
-                    query.setFilterById(downloadId);
-                    Cursor c = downloadManager.query(query);
-                    if (c.moveToFirst()) {
-                        int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                        switch (status) {
-                            case DownloadManager.STATUS_PAUSED:
-                            case DownloadManager.STATUS_PENDING:
-                            case DownloadManager.STATUS_RUNNING:
-                                break;
-                            case DownloadManager.STATUS_SUCCESSFUL:
-                                try {
-                                    ParcelFileDescriptor file = downloadManager.openDownloadedFile(downloadId);
-                                    FileInputStream fis = new FileInputStream(file.getFileDescriptor());
-                                    String json = JsonParser.readJson(fis);
-                                    FileOutputStream fos = openFileOutput("quizdata.json", MODE_PRIVATE);
-                                    fos.write(json.getBytes());
-                                    fos.close();
-                                } catch (IOException e) {
-                                    Log.e(TAG, "Invalid download location.");
-                                    e.printStackTrace();
-                                }
-                                break;
-                            case DownloadManager.STATUS_FAILED:
-                                Log.e(TAG, "Download failed.");
-                                // Show alert dialog here
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-    };
 
     public boolean getAlarm() {
         return activeAlarm;
