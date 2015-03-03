@@ -26,13 +26,19 @@ public class JsonParser {
     public static Topic readTopic(JsonReader reader) throws IOException {
         reader.beginObject();
         Topic topic = new Topic();
-        topic.setTopic(reader.nextString()); // title
-        topic.setShortDescription(reader.nextString()); // description
-        reader.beginArray();
-        while (reader.hasNext()) {
-            readQuestion(reader);
+        if (reader.nextName().equals("title"))
+            topic.setTopic(reader.nextString()); // title
+        if (reader.nextName().equals("desc"))
+            topic.setShortDescription(reader.nextString()); // description
+        if (reader.nextName().equals("questions")) {
+            ArrayList<Quiz> quizzes = new ArrayList<>();
+            reader.beginArray();
+            while (reader.hasNext()) {
+                quizzes.add(readQuestion(reader));
+            }
+            reader.endArray();
+            topic.setQuestions(quizzes);
         }
-        reader.endArray();
         reader.endObject();
         return topic;
     }
@@ -40,14 +46,17 @@ public class JsonParser {
     public static Quiz readQuestion(JsonReader reader) throws IOException {
         reader.beginObject();
         Quiz quiz = new Quiz();
-        quiz.setQuestion(reader.nextString()); // question
-        quiz.setCorrectAnswerIndex(reader.nextInt()); // answer index
-
-        reader.beginArray();
-        while (reader.hasNext()) {
-            quiz.addAnswer(reader.nextString());
+        if (reader.nextName().equals("text"))
+            quiz.setQuestion(reader.nextString()); // question
+        if (reader.nextName().equals("answer"))
+            quiz.setCorrectAnswerIndex(Integer.parseInt(reader.nextString()) - 1); // answer index
+        if (reader.nextName().equals("answers")) {
+            reader.beginArray();
+            while (reader.hasNext()) {
+                quiz.addAnswer(reader.nextString());
+            }
+            reader.endArray();
         }
-        reader.endArray();
         reader.endObject();
         return quiz;
     }

@@ -22,9 +22,9 @@ public interface TopicRepository {
 
     public void setLongDescription(String s);
 
-    public Quiz[] getQuestions ();
+    public ArrayList<Quiz> getQuestions ();
 
-    public void setQuestions(Quiz[] qs);
+    public void setQuestions(ArrayList<Quiz> qs);
 
     // Quiz Region
     public String getQuestion();

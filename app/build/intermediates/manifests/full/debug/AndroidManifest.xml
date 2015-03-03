@@ -40,6 +40,10 @@
             android:name="kevts.washington.edu.quizdroid.DownloadReceiver"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name="kevts.washington.edu.quizdroid.DownloaderService"
+            android:exported="true" />
     </application>
 
 </manifest>

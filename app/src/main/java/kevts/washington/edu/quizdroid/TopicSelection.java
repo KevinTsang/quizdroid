@@ -53,17 +53,7 @@ public class TopicSelection extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(TopicSelection.this, FragManager.class);
-                switch (((TextView)((LinearLayout)view).getChildAt(1)).getText().toString()) {
-                    case "Math- Fundamental mathematical operations":
-                        instance.setCurrentTopic(0);
-                        break;
-                    case "Physics- Basic mechanics":
-                        instance.setCurrentTopic(1);
-                        break;
-                    case "Marvel Super Heroes- Questions on both comic books and movies":
-                        instance.setCurrentTopic(2);
-                        break;
-                }
+                instance.setCurrentTopic(position);
                 startActivityForResult(intent, 1);
             }
         });
@@ -88,6 +78,7 @@ public class TopicSelection extends ActionBarActivity {
 
                     }
                 });
+                builder.create().show();
             } else {
                 Toast.makeText(getApplicationContext(), "No signal, please try again later.", Toast.LENGTH_SHORT).show();
             }
@@ -126,7 +117,23 @@ public class TopicSelection extends ActionBarActivity {
                                 break;
                             case DownloadManager.STATUS_FAILED:
                                 Log.e("TopicSelection", "Download failed.");
-                                // Show alert dialog here
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                                builder.setTitle("Download failed");
+                                builder.setMessage("Would you like to try downloading again now or quit and try again later?");
+                                builder.setPositiveButton("Now", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                                builder.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        TopicSelection.this.finish();
+                                    }
+                                });
+                                builder.create().show();
+
                                 break;
                         }
                     }

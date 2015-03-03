@@ -1,6 +1,7 @@
 package kevts.washington.edu.quizdroid;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by kevin on 2/15/15.
@@ -10,11 +11,11 @@ public class Topic implements Serializable {
     private String topic;
     private String shortDescription;
     private String longDescription;
-    private Quiz[] questions;
+    private ArrayList<Quiz> questions;
     private int currentCorrect;
 
     public Topic() {
-
+        questions = new ArrayList<Quiz>();
     }
 
     public String getTopic() {
@@ -41,12 +42,12 @@ public class Topic implements Serializable {
         longDescription = s;
     }
 
-    public Quiz[] getQuestions () {
+    public ArrayList<Quiz> getQuestions () {
         return questions;
     }
 
-    public void setQuestions(Quiz[] qs) {
-        questions = qs;
+    public void setQuestions(ArrayList<Quiz> qs) {
+        questions.addAll(qs);
     }
 
     public int getCurrentCorrect() {

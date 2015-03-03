@@ -177,36 +177,36 @@ public class QuizApp extends Application implements TopicRepository {
         topics.get(currentTopic).setLongDescription(s);
     }
 
-    public Quiz[] getQuestions () {
+    public ArrayList<Quiz> getQuestions() {
         return topics.get(currentTopic).getQuestions();
     }
 
-    public void setQuestions(Quiz[] qs) {
+    public void setQuestions(ArrayList<Quiz> qs) {
         topics.get(currentTopic).setQuestions(qs);
     }
 
     public String getQuestion() {
-        return topics.get(currentTopic).getQuestions()[currentQuestion].getQuestion();
+        return topics.get(currentTopic).getQuestions().get(currentQuestion).getQuestion();
     }
 
     public void setQuestion(String s) {
-        topics.get(currentTopic).getQuestions()[currentQuestion].setQuestion(s);
+        topics.get(currentTopic).getQuestions().get(currentQuestion).setQuestion(s);
     }
 
     public String[] getAnswers() {
-        return topics.get(currentTopic).getQuestions()[currentQuestion].getAnswers();
+        return topics.get(currentTopic).getQuestions().get(currentQuestion).getAnswers();
     }
 
     public void addAnswer(String s) {
-        topics.get(currentTopic).getQuestions()[currentQuestion].addAnswer(s);
+        topics.get(currentTopic).getQuestions().get(currentQuestion).addAnswer(s);
     }
 
     public String getCorrectAnswer() {
-        return topics.get(currentTopic).getQuestions()[currentQuestion].getCorrectAnswer();
+        return topics.get(currentTopic).getQuestions().get(currentQuestion).getCorrectAnswer();
     }
 
     public void setCorrectAnswerIndex(int i) {
-        topics.get(currentTopic).getQuestions()[currentQuestion].setCorrectAnswerIndex(i);
+        topics.get(currentTopic).getQuestions().get(currentQuestion).setCorrectAnswerIndex(i);
     }
 
     public int getCurrentQuestion() {
@@ -225,76 +225,91 @@ public class QuizApp extends Application implements TopicRepository {
         topics.get(currentTopic).setCurrentCorrect(i);
     }
 
-    public static Quiz[] initializeMathQuestions() {
+    public static ArrayList<Quiz> initializeMathQuestions() {
+        ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
         Quiz mathQuestion1 = new Quiz();
         mathQuestion1.setQuestion("2+7=?");
         mathQuestion1.setCorrectAnswerIndex(1);
         mathQuestion1.setAnswers(new String[] {"5", "9", "14", "20"});
+        quizzes.add(mathQuestion1);
 
         Quiz mathQuestion2 = new Quiz();
         mathQuestion2.setQuestion("20-3=?");
         mathQuestion2.setCorrectAnswerIndex(0);
         mathQuestion2.setAnswers(new String[] {"17", "6", "12", "42"});
+        quizzes.add(mathQuestion2);
 
         Quiz mathQuestion3 = new Quiz();
         mathQuestion3.setQuestion("3*5=?");
         mathQuestion3.setCorrectAnswerIndex(3);
         mathQuestion3.setAnswers(new String[] {"8", "16", "12", "15"});
+        quizzes.add(mathQuestion3);
 
         Quiz mathQuestion4 = new Quiz();
         mathQuestion4.setQuestion("42/7=?");
         mathQuestion4.setCorrectAnswerIndex(2);
         mathQuestion4.setAnswers(new String[] {"5", "9", "6", "10"});
+        quizzes.add(mathQuestion4);
 
-        return new Quiz[] {mathQuestion1, mathQuestion2, mathQuestion3, mathQuestion4};
+        return quizzes;
     }
 
-    public static Quiz[] initializePhysicsQuestions() {
+    public static ArrayList<Quiz> initializePhysicsQuestions() {
+        ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
         Quiz physicsQuestion1 = new Quiz();
         physicsQuestion1.setQuestion("What properties of an object are used to determine its momentum?");
         physicsQuestion1.setCorrectAnswerIndex(0);
         physicsQuestion1.setAnswers(new String[] {"mass and velocity", "mass and acceleration", "force and weight", "your mom and gravity"});
+        quizzes.add(physicsQuestion1);
 
         Quiz physicsQuestion2 = new Quiz();
         physicsQuestion2.setQuestion("Angular velocity describes an object moving:");
         physicsQuestion2.setCorrectAnswerIndex(2);
         physicsQuestion2.setAnswers(new String[]{"in and out", "up and down", "in a circle", "like Schrodinger's cat"});
+        quizzes.add(physicsQuestion2);
 
         Quiz physicsQuestion3 = new Quiz();
         physicsQuestion3.setQuestion("What is Newton's second law?");
         physicsQuestion3.setCorrectAnswerIndex(1);
         physicsQuestion3.setAnswers(new String[] {"what comes around goes around", "F=ma", "V=IR", "craziness is proportional to hotness"});
+        quizzes.add(physicsQuestion3);
 
         Quiz physicsQuestion4 = new Quiz();
         physicsQuestion4.setQuestion("Impulse measures which of the following?");
         physicsQuestion4.setCorrectAnswerIndex(3);
         physicsQuestion4.setAnswers(new String[] {"what I do when I'm drunk", "work", "heartbeats", "change in momentum"});
+        quizzes.add(physicsQuestion4);
 
-        return new Quiz[] {physicsQuestion1, physicsQuestion2, physicsQuestion3, physicsQuestion4};
+        return quizzes;
     }
 
-    public static Quiz[] initializeMSHQuestions() {
+    public static ArrayList<Quiz> initializeMSHQuestions() {
+        ArrayList<Quiz> quizzes = new ArrayList<Quiz>();
         Quiz mshQuestion1 = new Quiz();
         mshQuestion1.setQuestion("Which of the following is NOT part of X-Men?");
         mshQuestion1.setCorrectAnswerIndex(2);
         mshQuestion1.setAnswers(new String[] {"Storm", "Cyclops", "Batman", "Professor X"});
+        quizzes.add(mshQuestion1);
 
         Quiz mshQuestion2 = new Quiz();
         mshQuestion2.setQuestion("In 'The Avengers' movie, who is the actor who plays Loki?");
         mshQuestion2.setCorrectAnswerIndex(3);
         mshQuestion2.setAnswers(new String[] {"Chris Hemsworth", "Robert Downey Jr.", "Chris Evans", "Tom Hiddleston"});
+        quizzes.add(mshQuestion2);
 
         Quiz mshQuestion3 = new Quiz();
         mshQuestion3.setQuestion("What is the name of Thor's homeland?");
         mshQuestion3.setCorrectAnswerIndex(0);
         mshQuestion3.setAnswers(new String[] {"Asgard", "Earth", "Gotham", "Metropolis"});
+        quizzes.add(mshQuestion3);
 
         Quiz mshQuestion4 = new Quiz();
         mshQuestion4.setQuestion("What mutant will appear in the 'Avengers: Age of Ultron' movie?");
         mshQuestion4.setCorrectAnswerIndex(1);
         mshQuestion4.setAnswers(new String[] {"Wolverine", "Quicksilver", "Gambit", "Magneto"});
+        quizzes.add(mshQuestion4);
 
-        return new Quiz[] {mshQuestion1, mshQuestion2, mshQuestion3, mshQuestion4};
+        return quizzes;
     }
 
     public static Topic initializeMathTopic() {

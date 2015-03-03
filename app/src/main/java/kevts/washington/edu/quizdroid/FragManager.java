@@ -76,7 +76,7 @@ public class FragManager extends ActionBarActivity {
             TextView numOfQuestions = (TextView) rootView.findViewById(R.id.numOfQuestions);
             topicTitle.setText(app.getTopic());
             briefDescription.setText(app.getLongDescription());
-            numOfQuestions.setText(app.getQuestions().length + " questions total");
+            numOfQuestions.setText(app.getQuestions().size() + " questions total");
 
             Button beginButton = (Button) rootView.findViewById(R.id.beginButton);
             beginButton.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +164,7 @@ public class FragManager extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.activity_answer_summary, container, false);
             int selectedAnswerIndex = getArguments().getInt("selectedAnswer", 0);
-            String userAnswer = app.getQuestions()[app.getCurrentQuestion()].getAnswers()[selectedAnswerIndex];
+            String userAnswer = app.getQuestions().get(app.getCurrentQuestion()).getAnswers()[selectedAnswerIndex];
 
             TextView previousAnswer = (TextView) rootView.findViewById(R.id.previousAnswer);
             previousAnswer.setText(userAnswer);
@@ -176,10 +176,10 @@ public class FragManager extends ActionBarActivity {
             }
             correctAnswers.setText(app.getCurrentCorrect() + "");
             TextView totalAnswers = (TextView) rootView.findViewById(R.id.totalAnswers);
-            totalAnswers.setText(app.getQuestions().length + "");
+            totalAnswers.setText(app.getQuestions().size() + "");
 
             final Button next = (Button) rootView.findViewById(R.id.next);
-            if (app.getCurrentQuestion() + 1 < app.getQuestions().length) {
+            if (app.getCurrentQuestion() + 1 < app.getQuestions().size()) {
                 next.setText("Next");
             } else {
                 next.setText("Finish");
@@ -187,7 +187,7 @@ public class FragManager extends ActionBarActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (app.getCurrentQuestion() + 1 < app.getQuestions().length) {
+                    if (app.getCurrentQuestion() + 1 < app.getQuestions().size()) {
                         app.setCurrentQuestion(app.getCurrentQuestion() + 1);
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.setCustomAnimations(R.animator.slide_out_left, R.animator.slide_in_right);
