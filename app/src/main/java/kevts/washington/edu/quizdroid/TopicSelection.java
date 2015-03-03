@@ -59,17 +59,15 @@ public class TopicSelection extends ActionBarActivity {
         });
         if (!instance.haveNetworkConnection(getApplicationContext())) {
             if (instance.isAirplaneModeOn(getApplicationContext())) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("No Internet Connectivity");
                 builder.setMessage("Would you like to turn off airplane mode?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0);
-                        } else {
-                            Settings.Global.putInt(getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0);
-                        }
+                        Intent settingsIntent = new Intent(Settings.ACTION_SETTINGS);
+                        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivityForResult(settingsIntent, 0);
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -78,7 +76,8 @@ public class TopicSelection extends ActionBarActivity {
 
                     }
                 });
-                builder.create().show();
+                AlertDialog airplaneDialog = builder.create();
+                airplaneDialog.show();
             } else {
                 Toast.makeText(getApplicationContext(), "No signal, please try again later.", Toast.LENGTH_SHORT).show();
             }
@@ -117,7 +116,7 @@ public class TopicSelection extends ActionBarActivity {
                                 break;
                             case DownloadManager.STATUS_FAILED:
                                 Log.e("TopicSelection", "Download failed.");
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                                AlertDialog.Builder builder = new AlertDialog.Builder(TopicSelection.this);
                                 builder.setTitle("Download failed");
                                 builder.setMessage("Would you like to try downloading again now or quit and try again later?");
                                 builder.setPositiveButton("Now", new DialogInterface.OnClickListener() {
@@ -133,7 +132,6 @@ public class TopicSelection extends ActionBarActivity {
                                     }
                                 });
                                 builder.create().show();
-
                                 break;
                         }
                     }
